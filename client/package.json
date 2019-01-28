@@ -1,0 +1,27 @@
+{
+  "name": "arbyte_client",
+  "version": "0.0.1",
+  "description": "client package for AlvaroRausell/ArByte.git",
+  "main": "client.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "fs-extra": "^7.0.1",
+    "getmac": "^1.4.6",
+    "local-devices": "^1.1.1",
+    "node-macaddress": "^0.2.4",
+    "node-wifi": "^2.0.5",
+    "socket.io": "^2.2.0",
+    "socket.io-stream": "^0.9.1",
+    "watch": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "www.github.com/AlvaroRausell/ArByte.git"
+  },
+  "author": "Alvaro Rausell, Danilo Del Busso, Mateusz Nowak, Christine Husni",
+  "license": "ISC"
+}
