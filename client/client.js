@@ -2,19 +2,17 @@ const fs = require("fs-extra");
 const {exec} = require('child_process');
 const io = require("socket.io-client");
 const ss = require("socket.io-stream");
-const socket = io.connect("http://1f2eebba.ngrok.io");
+const socket = io.connect("http://localhost:3000");
 const watch = require('watch');
 const macaddress = require('node-macaddress');
 const path = require("path")
 const FILES_PATH = __dirname + '/files';
-
 
 var monitor = null;
 
 initialise_listeners();
 start_frontend();
 start_monitor();
-
 
 /**
  * Mac address login request to server
