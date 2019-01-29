@@ -13,7 +13,7 @@ show_welcome_message();
 create_server_monitor();
 initialise_drive_manager();
 exec(`sudo rm macs.txt`); //remove previously accepted macs when server is started
-
+initialise_frontend_support();
 
 /**
  * Initialise a file system monitor
@@ -160,6 +160,14 @@ function initialise_drive_manager() {
         console.log(`DRIVERS UTILITY LOG >>>>   ${data}`)
     })
     child.stderr.on('data', (data) => { console.log(`DRIVERS UTILITY LOG >>>>   ${data}`) })
+}
+
+
+/**
+ * Initialise frontend support
+ */
+function initialise_frontend_support(){
+    exec('sudo node frontend_support.js')
 }
 
 /**
