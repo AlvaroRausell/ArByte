@@ -9,7 +9,6 @@ const _MS = 3000;
 const FILES_PATH = __dirname + '/files';
 
 
-
 show_welcome_message();
 create_server_monitor();
 initialise_drive_manager();
@@ -156,11 +155,11 @@ io.on("connection", function(socket) {
  * mounted USB drives
  */
 function initialise_drive_manager() {
-    const child = exec(`node drives.js"}`)
+    const child = exec(`sudo node drives.js`)
     child.stdout.on('data', (data) => {
         console.log(`DRIVERS UTILITY LOG >>>>   ${data}`)
     })
-    //child.stderr.on('data', (data) => { console.log(`DRIVERS UTILITY LOG >>>>   ${data}`) })
+    child.stderr.on('data', (data) => { console.log(`DRIVERS UTILITY LOG >>>>   ${data}`) })
 }
 
 /**
