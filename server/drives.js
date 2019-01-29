@@ -1,36 +1,31 @@
-//npm i --save usb-detection drivelist
-
 var usbDetect = require('usb-detection');
 var drivelist = require('drivelist');
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 const process = require("process");
-const p = __dirname+'/../server/files/';
-var drivenames= [p+"USB_A", p+"USB_B",p+ "USB_C",p+ "USB_E",p+ "USB_F", p+"USB_G"];
+const p = __dirname + '/files/';
+var drivenames = [p + "USB_A", p + "USB_B", p + "USB_C", p + "USB_E", p + "USB_F", p + "USB_G"];
 var lastdrive = 0;
 var already_connected_devices = [];
 
 /*  Check for drives when application starts */
-init();
+check_new_drives();
 
 /*        USB DETECTION FUNCTIONS       */
 usbDetect.startMonitoring();
-usbDetect.on('add', function (device) {
+usbDetect.on('add', function(device) {
     console.log('         !!!!DEVICE DETECTED!!!!        ');
-    init();
+    check_new_drives();
 });
-async function init() {
+
+/**
+ * Check for new drives and mount them
+ */
+async function check_new_drives() {
     console.log("INITIALISING...");
     await sleep(2500);
     update_drives();
-console.log('DRIVE UTILITY INITIALISED.  AWAITING FOR NEW DRIVES');
+    console.log('DRIVE UTILITY INITIALISED.  AWAITING FOR NEW DRIVES');
 }
-function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms)
-    })
-}
-
-
 
 /**
  * Search drives and mount new ones
@@ -38,10 +33,10 @@ function sleep(ms) {
 function update_drives() {
     drivelist.list((error, drives) => {
         if (error) {
-//            throw error;
-return;
+           console.err(error);
+            return;
         }
-
+        //check if there is a new USB drive
         drives.forEach((drive) => {
             if (drive.isUSB === true) {
                 if (!already_connected_devices.includes(drive.description)) {
@@ -55,73 +50,91 @@ return;
 }
 
 
-/*        MOUNTING AND MOUNTING FUNCTIONS       */
+//---------------------- MOUNTING AND MOUNTING FUNCTIONS ----------------------
+
 /**
  * On exit, unmount drives and remove folders
  */
-process.on("exit", function () {
+process.on("exit", function() {
     drivenames.forEach((drive) => {
-       unmount_drive(drive);
+        unmount_drive(drive);
     });
 });
 
-
+/**
+ * Mount a new drive and add it to file sharing
+ * folder in server
+ * @param {drive to mount} drive 
+ */
 async function mount_drive(drive) {
-    var driveloc = drive.device;
     console.log(drive.description);
     console.log(drive.device);
 
+    //MAKE NEW DIRECTORY FOR MOUNTING DRIVE
     await exec(`mkdir ${drivenames[lastdrive]}`, (err, stdout, stderr) => {
         if (err) {
-            //console.log(stderr);
-  //          throw err;
-		return;
+            console.error(stderr);
+            return;
         }
-        //console.log(stdout);
-
+        console.log(stdout);
     });
-	//await sleep(1000)   
+
+    //MOUNT DRIVE TO NEWLY CREATE DIRECTORY
     await exec(`sudo mount ${drive.device}1 ${drivenames[lastdrive]}`, (err, stdout, stderr) => {
         if (err) {
-            //console.log(stderr);
-    //        throw err;
-return;
+            console.error(stderr);
+            return;
         }
-      //  console.log(stdout);
-
+        console.log(stdout);
     });
 
+    //SET DIRECTORY ACCESS RIGHTS
     await exec(`sudo chmod ugo+wx ${drivenames[lastdrive]}`, (err, stdout, stderr) => {
         if (err) {
-          //  console.log(stderr);
-           return;
+            console.error(stderr);
+            return;
         }
-	//console.log('succes!');
-        //console.log(stdout);
-
+        console.log(stdout);
     });
 
-	lastdrive++;
+    lastdrive++;
 
 }
 
+
+/**
+ * Unmount drive from directory
+ * @param {drive to unmount} drive 
+ */
 function unmount_drive(drive) {
     console.log(`UNMOUNTING ${drive}`);
+
+    //UNMOUND DRIVE
     exec(`sudo umount ${drive}`, (err, stdout, stderr) => {
         if (err) {
-          //  console.log(stderr);
+            console.error(stderr);
             return;
         }
-        //console.log(stdout);
+        console.log(stdout);
     });
-    console.log(`Deleting folder ${drive}`);
 
+    //DELETE FOLDER IN WHICH DRIVE WAS MOUNTED
     exec(`sudo rmdir ${drive}`, (err, stdout, stderr) => {
         if (err) {
-          //  console.log(stderr);
+            console.error(stderr);
             return;
         }
-        //console.log(stdout);
+        console.log(stdout);
     });
-    //console.log("Unmount complete!");
+}
+
+/**
+ * Thread sleeps for specified ms if called in
+ * async function
+ * @param {seconds to wait} ms 
+ */
+function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms)
+    })
 }
