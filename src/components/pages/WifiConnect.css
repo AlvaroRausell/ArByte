@@ -1,0 +1,10 @@
+.head h1 {
+  margin: auto !important;
+  text-align: center !important;
+  color: white !important;
+}
+
+head {
+  text-align: center !important;
+  display: flex;
+}

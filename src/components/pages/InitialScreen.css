@@ -1,0 +1,37 @@
+.main {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100%;
+  justify-content: center;
+}
+
+.main div {
+  display: flex;
+  margin: 10%;
+  margin-left: 21%;
+}
+
+.welcome-text {
+  display: flex;
+  width: 100%;
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+}
+.welcome-text h1 {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  align-self: center;
+  color: white !important;
+}
+.init {
+  width: 100%;
+}
+
+.have button {
+  width: 225%;
+}
+.have {
+  width: 50%;
+}
